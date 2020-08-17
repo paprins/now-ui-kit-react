@@ -13,7 +13,6 @@ import Routes from "./Routes";
 import * as serviceWorker from './serviceWorker';
 
 import Amplify from "aws-amplify";
-import amplify from 'amplify.js';
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
 // Amplify configuration is in .env
@@ -22,22 +21,22 @@ require('dotenv').config();
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: amplify.auth.REGION,
-    userPoolId: amplify.auth.USER_POOL_ID,
-    identityPoolId: amplify.auth.IDENTITY_POOL_ID,
-    userPoolWebClientId: amplify.auth.APP_CLIENT_ID,
+    region: process.env.REACT_APP_COGNITO_REGION,
+    userPoolId: process.env.REACT_APP_COGNITO_USER_POOL_ID,
+    identityPoolId: process.env.REACT_APP_COGNITO_IDENTITY_POOL_ID,
+    userPoolWebClientId: process.env.REACT_APP_COGNITO_APP_CLIENT_ID,
   },
   Storage: {
-      region: amplify.storage.REGION,
-      bucket: amplify.storage.BUCKET,
-      identityPoolId: amplify.auth.IDENTITY_POOL_ID
+      region: process.env.REACT_APP_S3_REGION,
+      bucket: process.env.REACT_APP_S3_BUCKET,
+      identityPoolId: process.env.REACT_APP_COGNITO_IDENTITY_POOL_ID
   },
   API: {
       endpoints: [
           {
-              name: amplify.api.NAME,
-              endpoint: amplify.api.URL,
-              region: amplify.api.REGION
+              name: process.env.REACT_APP_API_NAME,
+              endpoint: process.env.REACT_APP_API_URL,
+              region: process.env.REACT_APP_API_REGION
           },
       ]
   }
