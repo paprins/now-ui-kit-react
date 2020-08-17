@@ -1,5 +1,7 @@
 import React from "react";
 
+import { withAuthenticator } from '@aws-amplify/ui-react';
+
 // reactstrap components
 // import {
 // } from "reactstrap";
@@ -64,4 +66,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default withAuthenticator(Home);

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 // styles for this kit
 import "assets/css/bootstrap.min.css";
@@ -8,39 +8,47 @@ import "assets/scss/now-ui-kit.scss?v=1.4.0";
 import "assets/demo/demo.css?v=1.4.0";
 import "assets/demo/nucleo-icons-page-styles.css?v=1.4.0";
 
-import Home from "views/Home.js";
-import LandingPage from "views/examples/LandingPage.js";
-import LoginPage from "views/examples/LoginPage.js";
-import ProfilePage from "views/examples/ProfilePage.js";
-import NucleoIcons from "./views/NucleoIcons.js";
+import Routes from "./Routes";
+
 import * as serviceWorker from './serviceWorker';
 
+import Amplify from "aws-amplify";
+import amplify from 'amplify.js';
+import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
+
+// Amplify configuration is in .env
+require('dotenv').config();
+
+Amplify.configure({
+  Auth: {
+    mandatorySignIn: true,
+    region: amplify.auth.REGION,
+    userPoolId: amplify.auth.USER_POOL_ID,
+    identityPoolId: amplify.auth.IDENTITY_POOL_ID,
+    userPoolWebClientId: amplify.auth.APP_CLIENT_ID,
+  },
+  Storage: {
+      region: amplify.storage.REGION,
+      bucket: amplify.storage.BUCKET,
+      identityPoolId: amplify.auth.IDENTITY_POOL_ID
+  },
+  API: {
+      endpoints: [
+          {
+              name: amplify.api.NAME,
+              endpoint: amplify.api.URL,
+              region: amplify.api.REGION
+          },
+      ]
+  }
+});
+
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Switch>
-        <Route path="/index" render={(props) => <Home {...props} />} />
-        <Route
-          path="/nucleo-icons"
-          render={(props) => <NucleoIcons {...props} />}
-        />
-        <Route
-          path="/landing-page"
-          render={(props) => <LandingPage {...props} />}
-        />
-        <Route
-          path="/profile-page"
-          render={(props) => <ProfilePage {...props} />}
-        />
-        <Route
-          path="/login-page"
-          render={(props) => <LoginPage {...props} />}
-        />
-        <Redirect to="/index" />
-        <Redirect from="/" to="/index" />
-      </Switch>
-    </Switch>
-  </BrowserRouter>,
+  <Router>
+    <AmplifyAuthenticator usernameAlias="email">
+        <Routes/>
+    </AmplifyAuthenticator>
+  </Router>,
   document.getElementById('root')
 );
 
